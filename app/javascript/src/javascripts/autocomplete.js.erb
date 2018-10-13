@@ -1,5 +1,6 @@
 import Utility from './utility'
 import SavedSearch from './saved_searches'
+import Routes from './routes.js'
 
 let Autocomplete = {};
 
@@ -180,7 +181,7 @@ Autocomplete.initialize_artist_autocomplete = function($fields) {
     },
     source: function(req, resp) {
       $.ajax({
-        url: "/artists.json",
+        url: Routes.artists_path({format: "json"}),
         data: {
           "search[name_like]": req.term.trim().replace(/\s+/g, "_") + "*",
           "search[is_active]": true,
@@ -222,7 +223,7 @@ Autocomplete.initialize_wiki_autocomplete = function($fields) {
     },
     source: function(req, resp) {
       $.ajax({
-        url: "/wiki_pages.json",
+        url: Routes.wiki_pages_path({format: "json"}),
         data: {
           "search[title]": req.term + "*",
           "search[hide_deleted]": "Yes",
@@ -248,7 +249,7 @@ Autocomplete.initialize_wiki_autocomplete = function($fields) {
 
 Autocomplete.normal_source = function(term, resp) {
   return $.ajax({
-    url: "/tags/autocomplete.json",
+    url: Routes.autocomplete_tags_path({format: "json"}),
     data: {
       "search[name_matches]": term,
       "expiry": 7
@@ -344,7 +345,7 @@ Autocomplete.on_tab = function(event) {
 Autocomplete.render_item = function(list, item) {
   var $link = $("<a/>");
   $link.text(item.label);
-  $link.attr("href", "/posts?tags=" + encodeURIComponent(item.value));
+  $link.attr("href", Routes.posts_path() +"?tags=" + encodeURIComponent(item.value));
   $link.on("click.danbooru", function(e) {
     e.preventDefault();
   });
@@ -450,7 +451,7 @@ Autocomplete.static_metatag_source = function(term, resp, metatag) {
 
 Autocomplete.user_source = function(term, resp, metatag) {
   return $.ajax({
-    url: "/users.json",
+    url: Routes.users_path({format: "json"}),
     data: {
       "search[order]": "post_upload_count",
       "search[current_user_first]": "true",
@@ -484,7 +485,7 @@ Autocomplete.user_source = function(term, resp, metatag) {
 
 Autocomplete.pool_source = function(term, resp, metatag) {
   return $.ajax({
-    url: "/pools.json",
+    url: Routes.pools_path({format: "json"}),
     data: {
       "search[order]": "post_count",
       "search[name_matches]": term,
@@ -507,7 +508,7 @@ Autocomplete.pool_source = function(term, resp, metatag) {
 
 Autocomplete.favorite_group_source = function(term, resp, metatag) {
   return $.ajax({
-    url: "/favorite_groups.json",
+    url: Routes.favorite_groups_path({format: "json"}),
     data: {
       "search[name_matches]": term,
       "limit": 10
