@@ -1,5 +1,6 @@
 import Cookie from './cookie'
 import Utility from './utility'
+import Routes from './routes.js'
 
 $(function() {
   // Account notices
@@ -30,7 +31,7 @@ $(function() {
 
   $("#desktop-version-link a").on("click.danbooru", function(e) {
     e.preventDefault();
-    $.ajax("/users/" + Utility.meta("current-user-id") + ".json", {
+    $.ajax(Routes.user_path(Utility.meta("current-user-id"), {format: "json"}), {
       method: "PUT",
       data: {
         "user[disable_responsive_mode]": "true"
