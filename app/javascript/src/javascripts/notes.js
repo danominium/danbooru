@@ -1,4 +1,5 @@
 import Utility from './utility'
+import Routes from './routes.js'
 
 let Note = {
   Box: {
@@ -417,7 +418,7 @@ let Note = {
       $dialog.data("uiDialog")._title = function(title) {
         title.html(this.options.title); // Allow unescaped html in dialog title
       }
-      $dialog.dialog("option", "title", 'Edit note #' + id + ' (<a href="/wiki_pages/help:notes">view help</a>)');
+      $dialog.dialog("option", "title", 'Edit note #' + id + ' (<a href="' + Routes.wiki_page_path("help:notes") + '">view help</a>)');
 
       $dialog.on("dialogclose.danbooru", function() {
         Note.editing = false;
@@ -484,7 +485,7 @@ let Note = {
       var text = $textarea.val();
       $note_body.data("original-body", text);
       Note.Body.set_text($note_body, $note_box, "Loading...");
-      $.get("/note_previews.json", {body: text}).then(function(data) {
+      $.get(Routes.note_previews_path({format: "json"}), {body: text}).then(function(data) {
         Note.Body.set_text($note_body, $note_box, data.body);
         Note.Box.resize_inner_border($note_box);
         $note_body.show();
@@ -492,14 +493,14 @@ let Note = {
       $this.dialog("close");
 
       if (id.match(/\d/)) {
-        $.ajax("/notes/" + id + ".json", {
+        $.ajax(Routes.note_path(id, {format: "json"}), {
           type: "PUT",
           data: Note.Edit.parameterize_note($note_box, $note_body),
           error: Note.Edit.error_handler,
           success: Note.Edit.success_handler
         });
       } else {
-        $.ajax("/notes.json", {
+        $.ajax(Routes.notes_path({format: "json"}), {
           type: "POST",
           data: Note.Edit.parameterize_note($note_box, $note_body),
           error: Note.Edit.error_handler,
@@ -517,7 +518,7 @@ let Note = {
       var $note_box = Note.Box.find(id);
       $note_box.find(".note-box-inner-border").addClass("unsaved");
       Note.Body.set_text($note_body, $note_box, "Loading...");
-      $.get("/note_previews.json", {body: text}).then(function(data) {
+      $.get(Routes.note_previews_path({format: "json"}), {body: text}).then(function(data) {
         Note.Body.set_text($note_body, $note_box, data.body);
         $note_body.show();
       });
@@ -536,7 +537,7 @@ let Note = {
       var id = $this.data("id");
 
       if (id.match(/\d/)) {
-        $.ajax("/notes/" + id + ".json", {
+        $.ajax(Routes.note_path(id, {format: "json"}), {
           type: "DELETE",
           success: function() {
             Note.Box.find(id).remove();
@@ -551,7 +552,7 @@ let Note = {
       var $this = $(this);
       var id = $this.data("id");
       if (id.match(/\d/)) {
-        window.location.href = "/note_versions?search[note_id]=" + id;
+        window.location.href = Routes.note_versions_path() + "?search[note_id]=" + id;
       }
       $(this).dialog("close");
     }
