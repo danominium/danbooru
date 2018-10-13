@@ -1,5 +1,6 @@
 import Post from './posts.js.erb'
 import Utility from './utility'
+import Routes from './routes.js'
 
 let Favorite = {}
 
@@ -8,7 +9,7 @@ Favorite.create = function(post_id) {
 
   $.ajax({
     type: "POST",
-    url: "/favorites.js",
+    url: Routes.favorites_path({format: "js"}),
     data: {
       post_id: post_id
     },
@@ -26,7 +27,7 @@ Favorite.destroy = function(post_id) {
 
   $.ajax({
     type: "DELETE",
-    url: "/favorites/" + post_id + ".js",
+    url: Routes.favorite_path(post_id, {format: "js"}),
     complete: function() {
       Post.notice_update("dec");
     }
