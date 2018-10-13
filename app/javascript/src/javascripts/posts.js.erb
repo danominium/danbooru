@@ -6,6 +6,7 @@ import RelatedTag from './related_tag.js.erb'
 import Cookie from './cookie'
 import Note from './notes'
 import SavedSearch from './saved_searches'
+import Routes from './routes.js'
 
 let Post = {};
 
@@ -176,7 +177,7 @@ Post.close_edit_dialog = function(e, ui) {
 
 Post.initialize_similar = function() {
   $("#similar-button").on("click.danbooru", function(e) {
-    $.get("/iqdb_queries", {"url": $("#post_source").val()}).done(function(html) {$("#iqdb-similar").html(html).show()});
+    $.get(Routes.iqdb_queries_path(), {"url": $("#post_source").val()}).done(function(html) {$("#iqdb-similar").html(html).show()});
     e.preventDefault();
   });
 }
@@ -250,7 +251,7 @@ Post.initialize_links = function() {
     var other_post_id = parseInt(prompt("Enter the ID of the post to copy all notes to:"), 10);
 
     if (other_post_id !== null) {
-      $.ajax("/posts/" + current_post_id + "/copy_notes", {
+      $.ajax(Routes.copy_notes_post_path(current_post_id), {
         type: "PUT",
         data: {
           other_post_id: other_post_id
@@ -447,7 +448,7 @@ Post.initialize_post_sections = function() {
       $("#edit").hide();
       $("#share").hide();
       $("#recommended").show();
-      $.get("/recommended_posts", {context: "post", post_id: Utility.meta("post-id")}, function(data) {
+      $.get(Routes.recommended_posts_path, {context: "post", post_id: Utility.meta("post-id")}, function(data) {
         $("#recommended").html(data);
       });
     } else {
@@ -502,7 +503,7 @@ Post.update_data = function(data) {
 Post.vote = function(score, id) {
   $(window).trigger("danbooru:notice", "Voting...");
 
-  $.post("/posts/" + id + "/votes.js", {
+  $.post(Routes.post_votes_path(id, {format: "js"}), {
     score: score
   });
 }
@@ -517,7 +518,7 @@ Post.update = function(post_id, params) {
 
   $.ajax({
     type: "PUT",
-    url: "/posts/" + post_id + ".json",
+    url: Routes.post_path(post_id, {format: "json"}),
     data: params,
     success: function(data) {
       Post.notice_update("dec");
@@ -525,7 +526,7 @@ Post.update = function(post_id, params) {
     },
     error: function(data) {
       Post.notice_update("dec");
-      $(window).trigger("danbooru:error", 'There was an error updating <a href="/posts/' + post_id + '">post #' + post_id + '</a>');
+      $(window).trigger("danbooru:error", 'There was an error updating <a href="' + Routes.post_path(post_id) + '">post #' + post_id + '</a>');
     }
   });
 }
@@ -533,7 +534,7 @@ Post.update = function(post_id, params) {
 Post.ban = function(post_id) {
   $.ajax({
     type: "POST",
-    url: "/moderator/post/posts/" + post_id + "/ban.js",
+    url: Routes.ban_moderator_post_post_path(post_id, {format: "js"}),
     data: {
       commit: "Ban"
     },
@@ -541,14 +542,14 @@ Post.ban = function(post_id) {
       $("#post_" + post_id).remove();
     },
     error: function(data) {
-      $(window).trigger("danbooru:error", 'There was an error updating <a href="/posts/' + post_id + '">post #' + post_id + '</a>');
+      $(window).trigger("danbooru:error", 'There was an error updating <a href="' + Routes.post_path(post_id) + '">post #' + post_id + '</a>');
     }
   });
 }
 
 Post.approve = function(post_id) {
   $.post(
-    "/moderator/post/approval.json",
+    Routes.moderator_post_approval_path({format: "json"}),
     {"post_id": post_id}
   ).fail(function(data) {
     var message = $.map(data.responseJSON.errors, function(msg, attr) { return msg; }).join("; ");
@@ -602,7 +603,7 @@ Post.initialize_saved_searches = function() {
       $("#save-search-dialog").dialog("open");
     } else {
       $.post(
-        "/saved_searches.js",
+        Routes.saved_searches_path({format: "js"}),
         {
           "saved_search": {
             "query": $("#tags").val()
