@@ -1,5 +1,6 @@
 import Utility from './utility'
 import Cookie from './cookie'
+import Routes from './routes.js'
 
 let Blacklist = {};
 
@@ -69,7 +70,7 @@ Blacklist.update_sidebar = function() {
     var count = $("<span/>");
 
     link.text(entry.tags);
-    link.attr("href", `/posts?tags=${encodeURIComponent(entry.tags)}`);
+    link.attr("href", Routes.posts_path() + `?tags=${encodeURIComponent(entry.tags)}`);
     link.attr("title", entry.tags);
     link.on("click.danbooru", Blacklist.toggle_entry);
     count.html(entry.hits);
