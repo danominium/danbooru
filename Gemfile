@@ -89,3 +89,5 @@ group :test do
   gem "webmock"
   gem "minitest-ci"
 end
+
+gem "js-routes", "~> 1.4"

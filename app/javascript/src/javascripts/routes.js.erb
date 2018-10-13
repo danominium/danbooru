@@ -1,0 +1,8 @@
+// https://github.com/railsware/js-routes/issues/234
+/* rails-erb-loader-dependencies ../config/routes */
+var routes = {};
+(function() {
+  <%= JsRoutes.generate(namespace: "Routes") %>
+}.call(routes));
+
+export default routes.Routes;
