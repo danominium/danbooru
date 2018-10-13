@@ -1,3 +1,5 @@
+import Routes from './routes.js'
+
 let JanitorTrials = {};
 
 JanitorTrials.initialize_all = function() {
@@ -5,7 +7,7 @@ JanitorTrials.initialize_all = function() {
     $("input[value=Test]").on("click.danbooru", function(e) {
       $.ajax({
         type: "get",
-        url: "/janitor_trials/test.json",
+        url: Routes.test_janitor_trials_path([format: "json"}),
         data: {
           janitor_trial: {
             user_name: $("#janitor_trial_user_name").val()
