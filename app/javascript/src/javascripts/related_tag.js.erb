@@ -1,6 +1,7 @@
 import Upload from './uploads';
 import Utility from './utility';
 import Cookie from './cookie';
+import Routes from './routes.js'
 
 let RelatedTag = {};
 
@@ -30,7 +31,7 @@ RelatedTag.common_bind = function(button_name, category) {
     $dest.empty();
     RelatedTag.build_recent_and_frequent($dest);
     $dest.append("<em>Loading...</em>");
-    $.get("/related_tag.json", {
+    $.get(Routes.related_tag_path({format: "json"}), {
       "query": RelatedTag.current_tag(),
       "category": category
     }, RelatedTag.process_response);
@@ -192,7 +193,7 @@ RelatedTag.build_html = function(query, related_tags, name, is_wide_column) {
 
   var match = query.match(/^wiki:(.+)/);
   if (match) {
-    header.html($("<a/>").attr("href", "/wiki_pages?title=" + encodeURIComponent(match[1])).attr("target", "_blank").text(query));
+    header.html($("<a/>").attr("href", Routes.wiki_pages_path() + "?title=" + encodeURIComponent(match[1])).attr("target", "_blank").text(query));
   } else {
     header.text(query);
   }
@@ -215,7 +216,7 @@ RelatedTag.build_html = function(query, related_tags, name, is_wide_column) {
       var $link = $("<a/>");
       $link.text(tag[0].replace(/_/g, " "));
       $link.addClass("tag-type-" + tag[1]);
-      $link.attr("href", "/posts?tags=" + encodeURIComponent(tag[0]));
+      $link.attr("href", Routes.posts_path() + "?tags=" + encodeURIComponent(tag[0]));
       $link.on("click.danbooru", RelatedTag.toggle_tag);
       if (RelatedTag.tags_include(tag[0])) {
         $link.addClass("selected");
@@ -310,7 +311,7 @@ RelatedTag.disable_artist_url = function(e) {
         return;
       }
 
-      $.ajax("/artist_urls/" + v.id, {
+      $.ajax(Routes.artist_url_path(v.id), {
         method: "PUT",
         data: {
           artist_url: {
