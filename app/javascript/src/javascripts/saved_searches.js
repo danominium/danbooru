@@ -1,3 +1,5 @@
+import Routes from './routes.js'
+
 let SavedSearch = {};
 
 SavedSearch.initialize_all = function() {
@@ -7,7 +9,7 @@ SavedSearch.initialize_all = function() {
 }
 
 SavedSearch.labels = function(term) {
-  return $.getJSON("/saved_searches/labels", {
+  return $.getJSON(Routes.labels_saved_searches_path(), {
     "search[label]": term + "*",
     "limit": 10
   });
