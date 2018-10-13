@@ -1,3 +1,5 @@
+import Routes from './routes.js'
+
 let Dtext = {};
 
 Dtext.initialize_all = function() {
@@ -27,7 +29,7 @@ Dtext.call_preview = function(e, $button, $input, $preview) {
   $preview.text("Loading...").fadeIn("fast");
   $.ajax({
     type: "post",
-    url: "/dtext_preview",
+    url: Routes.dtext_preview_path(),
     data: {
       body: $input.val()
     },
