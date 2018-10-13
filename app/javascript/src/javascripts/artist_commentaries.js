@@ -1,4 +1,5 @@
 import Utility from "./utility";
+import Routes from './routes.js'
 
 let ArtistCommentary = {};
 
@@ -83,7 +84,7 @@ ArtistCommentary.fetch_commentary = function() {
 };
 
 ArtistCommentary.from_source = function(source) {
-  return $.get("/source.json?url=" + encodeURIComponent(source)).then(function(data) {
+  return $.get(Routes.source_path({format: "json"}) + "?url=" + encodeURIComponent(source)).then(function(data) {
     return {
       original_title: data.artist_commentary.dtext_title,
       original_description: data.artist_commentary.dtext_description,
@@ -93,7 +94,7 @@ ArtistCommentary.from_source = function(source) {
 };
 
 ArtistCommentary.from_post_id = function(post_id) {
-  return $.get("/posts/" + encodeURIComponent(post_id) + "/artist_commentary.json").then(function(commentary) {
+  return $.get(Routes.post_artist_commentary_path(encodeURIComponent(post_id), {format: "json"})).then(function(commentary) {
     commentary.source = "post #" + post_id;
     return commentary;
   });
