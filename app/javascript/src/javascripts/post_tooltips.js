@@ -1,4 +1,5 @@
 import Utility from './utility'
+import Routes from './routes.js'
 
 require('qtip2');
 require('qtip2/dist/jquery.qtip.css');
@@ -8,7 +9,7 @@ let PostTooltip = {};
 PostTooltip.render_tooltip = function (event, qtip) {
   var post_id = $(this).parents("[data-id]").data("id");
 
-  $.get("/posts/" + post_id, { variant: "tooltip" }).then(function (html) {
+  $.get(Routes.post_path(post_id), { variant: "tooltip" }).then(function (html) {
     qtip.set("content.text", html);
     qtip.elements.tooltip.removeClass("post-tooltip-loading");
 
@@ -107,11 +108,11 @@ PostTooltip.on_disable_tooltips = function (event) {
   $(event.target).parents(".qtip").qtip("hide");
 
   if (Utility.meta("current-user-id") === "") {
-    $(window).trigger("danbooru:notice", '<a href="/session/new">Login</a> to disable tooltips permanently');
+    $(window).trigger("danbooru:notice", '<a href="' + Routes.new_session_path() + '">Login</a> to disable tooltips permanently');
     return;
   }
 
-  $.ajax("/users/" + Utility.meta("current-user-id") + ".json", {
+  $.ajax(Routes.user_path(Utility.meta("current-user-id"), {format: 'json'}), {
     method: "PUT",
     data: { "user[disable_post_tooltips]": "true" },
   }).then(function() {
