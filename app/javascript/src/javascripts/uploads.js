@@ -1,4 +1,5 @@
 import Post from './posts.js.erb'
+import Routes from './routes.js'
 
 let Upload = {};
 
@@ -56,7 +57,7 @@ Upload.validate_upload = function (e) {
 
 Upload.initialize_iqdb_source = function() {
   if (/^https?:\/\//.test($("#upload_source").val())) {
-    $.get("/iqdb_queries", {"url": $("#upload_source").val()}).done(function(html) {$("#iqdb-similar").html(html)});
+    $.get(Routes.iqdb_queries_path(), {"url": $("#upload_source").val()}).done(function(html) {$("#iqdb-similar").html(html)});
   }
 }
 
@@ -72,7 +73,7 @@ Upload.initialize_enter_on_tags = function() {
 
 Upload.initialize_similar = function() {
   $("#similar-button").on("click.danbooru", function(e) {
-    $.get("/iqdb_queries", {"url": $("#upload_source").val()}).done(function(html) {$("#iqdb-similar").html(html).show()});
+    $.get(Routes.iqdb_queries_path(), {"url": $("#upload_source").val()}).done(function(html) {$("#iqdb-similar").html(html).show()});
     e.preventDefault();
   });
 }
@@ -98,7 +99,7 @@ Upload.fetch_data_manual = function(e) {
 
   if (/^https?:\/\//.test(url)) {
     $("#source-info").addClass("loading");
-    $.get("/source.js", { url: url, ref: ref }).always(resp => $("#source-info").removeClass("loading"));
+    $.get(Routes.source_path({format: "js"}), { url: url, ref: ref }).always(resp => $("#source-info").removeClass("loading"));
   }
 
   e.preventDefault();
