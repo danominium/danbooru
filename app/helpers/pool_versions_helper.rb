@@ -5,13 +5,13 @@ module PoolVersionsHelper
     diff = pool_version.build_diff(previous)
 
     html << diff[:added_post_ids].map do |post_id|
-      '<ins><a href="/posts/' + post_id.to_s + '">' + post_id.to_s + '</a></ins>'
+      '<ins>' + link_to(post_id.to_s, post_path(post_id.to_s)) + '</ins>'
     end.join(" ")
 
     html << " "
 
     html << diff[:removed_post_ids].map do |post_id|
-      '<del><a href="/posts/' + post_id.to_s + '">' + post_id.to_s + '</a></del>'
+      '<ins>' + link_to(post_id.to_s, post_path(post_id.to_s)) + '</ins>'
     end.join(" ")
 
     return html.html_safe

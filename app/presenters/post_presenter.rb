@@ -20,7 +20,6 @@ class PostPresenter < Presenter
       return ""
     end
 
-    path = options[:path_prefix] || "/posts"
     if Danbooru.config.enable_image_cropping && options[:show_cropped] && post.has_cropped? && !CurrentUser.user.disable_cropped_thumbnails?
       cropped_src = post.crop_file_url
     else
@@ -37,21 +36,18 @@ class PostPresenter < Presenter
     else
       tag_param = nil
     end
-    html << %{<a href="#{path}/#{post.id}#{tag_param}">}
 
     tooltip = "#{post.tag_string} rating:#{post.rating} score:#{post.score}"
-    html << %{<picture>}
-    html << %{<source media="(max-width: 660px)" srcset="#{cropped_src}">}
-    html << %{<source media="(min-width: 660px)" srcset="#{post.preview_file_url}">}
-    html << %{<img itemprop="thumbnailUrl" class="has-cropped-#{post.has_cropped?}" src="#{post.preview_file_url}" title="#{h(tooltip)}" alt="#{h(post.tag_string)}">}
-    html << %{</picture>}
-    html << %{</a>}
+    picture = %{<picture>}
+    picture << %{<source media="(max-width: 660px)" srcset="#{cropped_src}">}
+    picture << %{<source media="(min-width: 660px)" srcset="#{post.preview_file_url}">}
+    picture << %{<img itemprop="thumbnailUrl" class="has-cropped-#{post.has_cropped?}" src="#{post.preview_file_url}" title="#{h(tooltip)}" alt="#{h(post.tag_string)}">}
+    picture << %{</picture>}
+    html << ActionController::Base.helpers.link_to(picture.html_safe, Rails.application.routes.url_helpers.post_path(post.id))
 
     if options[:pool]
       html << %{<p class="desc">}
-      html << %{<a href="/pools/#{options[:pool].id}">}
-      html << h(options[:pool].pretty_name.truncate(80))
-      html << %{</a>}
+      html << ActionController::Base.helpers.link_to(h(options[:pool].pretty_name.truncate(80)), Rails.application.routes.url_helpers.pool_path(options[:pool].id))
       html << %{</p>}
     end
 

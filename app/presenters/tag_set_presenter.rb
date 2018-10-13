@@ -123,20 +123,21 @@ class TagSetPresenter < Presenter
 
     unless name_only
       if category == Tag.categories.artist
-        html << %{<a class="wiki-link" href="/artists/show_or_new?name=#{u(name)}">?</a> }
+        html << ActionController::Base.helpers.link_to("?", %{#{Rails.application.routes.url_helpers.show_or_new_artists_path()}?name=#{u(name)}}, {class: "wiki-link"})
       else
-        html << %{<a class="wiki-link" href="/wiki_pages/show_or_new?title=#{u(name)}">?</a> }
+        html << ActionController::Base.helpers.link_to("?", %{#{Rails.application.routes.url_helpers.show_or_new_wiki_pages_path()}?title=#{u(name)}}, {class: "wiki-link"})
       end
 
       if show_extra_links && current_query.present?
-        html << %{<a rel="nofollow" href="/posts?tags=#{u(current_query)}+#{u(name)}" class="search-inc-tag">+</a> }
-        html << %{<a rel="nofollow" href="/posts?tags=#{u(current_query)}+-#{u(name)}" class="search-exl-tag">&ndash;</a> }
+        html << ActionController::Base.helpers.link_to("+".html_safe, %{#{Rails.application.routes.url_helpers.posts_path()}?tags=#{u(current_query)}+#{u(name)}}, {class: "search-inc-tag", rel: "nofollow"})
+        html << ActionController::Base.helpers.link_to("&ndash;".html_safe, %{#{Rails.application.routes.url_helpers.posts_path()}?tags=#{u(current_query)}+-#{u(name)}}, {class: "search-exl-tag", rel: "nofollow"})
       end
     end
 
     humanized_tag = humanize_tags ? name.tr("_", " ") : name
     itemprop = 'itemprop="author"' if category == Tag.categories.artist
-    html << %{<a class="search-tag" #{itemprop} href="/posts?tags=#{u(name)}">#{h(humanized_tag)}</a> }
+    # html << %{<a class="search-tag" #{itemprop} href="/posts?tags=#{u(name)}">#{h(humanized_tag)}</a> }
+    html << ActionController::Base.helpers.link_to(h(humanized_tag), %{#{Rails.application.routes.url_helpers.posts_path()}?tags=#{u(name)}}, {class: "search-tag"})
 
     unless name_only || tag.new_record?
       if count >= 10_000

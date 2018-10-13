@@ -87,7 +87,7 @@ module DelayedJobsHelper
       h(job.payload_object.args.flatten.join(" "))
 
     when "Upload#process!"
-      %{<a href="/uploads/#{job.payload_object.object.id}">record</a>}
+      link_to("record", upload_path(job.payload_object.object.id))
 
     when "Tag#update_related"
       h(job.payload_object.name)
@@ -123,10 +123,10 @@ module DelayedJobsHelper
       h(job.payload_object.args.join(" "))
 
     when "Pool#update_category_pseudo_tags_for_posts"
-      %{<a href="/pools/#{job.payload_object.id}">#{h(job.payload_object.name)}</a>}
+      link_to(h(job.payload_object.name), pool_path(job.payload_object.id))
 
     when "Post.delete_files"
-      %{<a href="/posts/#{job.payload_object.args.first}">post ##{job.payload_object.args.first}</a>}
+      link_to(%{post ##{job.payload_object.args.first}}, post_path(job.payload_object.args.first))
 
     when "BulkRevert#process"
       h(job.payload_object.args.join(" "))
