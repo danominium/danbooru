@@ -13,4 +13,6 @@ if defined?(Unicorn) && Rails.env.production?
   #use Unicorn::WorkerKiller::Oom, (192*(1024**2)), (256*(1024**2))
 end
 
-run Rails.application
+map Rails.application.config.relative_url_root || '/' do
+  run Rails.application
+end
