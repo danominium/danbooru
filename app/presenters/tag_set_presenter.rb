@@ -136,7 +136,6 @@ class TagSetPresenter < Presenter
 
     humanized_tag = humanize_tags ? name.tr("_", " ") : name
     itemprop = 'itemprop="author"' if category == Tag.categories.artist
-    # html << %{<a class="search-tag" #{itemprop} href="/posts?tags=#{u(name)}">#{h(humanized_tag)}</a> }
     html << ActionController::Base.helpers.link_to(h(humanized_tag), %{#{Rails.application.routes.url_helpers.posts_path()}?tags=#{u(name)}}, {class: "search-tag"})
 
     unless name_only || tag.new_record?
