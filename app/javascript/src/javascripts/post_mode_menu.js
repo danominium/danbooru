@@ -2,6 +2,7 @@ import Utility from './utility'
 import Cookie from './cookie'
 import Post from './posts.js.erb'
 import Favorite from './favorites'
+import Routes from './routes.js'
 
 let PostModeMenu = {};
 
@@ -139,7 +140,7 @@ PostModeMenu.change = function() {
 PostModeMenu.open_edit = function(post_id) {
   var $post = $("#post_" + post_id);
   $("#quick-edit-div").slideDown("fast");
-  $("#quick-edit-form").attr("action", "/posts/" + post_id + ".json");
+  $("#quick-edit-form").attr("action", Routes.post_path(post_id, {format: "json"}));
   $("#post_tag_string").val($post.data("tags") + " ").focus().selectEnd();
 
   /* Set height of tag edit box to fit content. */
